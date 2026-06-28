@@ -1,37 +1,54 @@
 import os
 import requests
+import yfinance as yf
+import pandas as pd
 from datetime import datetime, timezone, timedelta
 
+def calculate_kd(df, n=9):
+    low_n_series = df['Low'].squeeze().rolling(window=n).min()
+    high_n_series = df['High'].squeeze().rolling(window=n).max()
+    close_series = df['Close'].squeeze()
+    rsv = (close_series - low_n_series) / (high_n_series - low_n_series) * 100
+    
+    k_values, d_values = [50.0], [50.0]
+    for i in range(1, len(rsv)):
+        current_rsv_value = rsv.iloc[i]
+        if pd.isna(current_rsv_value):
+            k_values.append(50.0); d_values.append(50.0)
+        else:
+            k = (2/3 * k_values[-1]) + (1/3 * current_rsv_value)
+            d = (2/3 * d_values[-1]) + (1/3 * k)
+            k_values.append(k); d_values.append(d)
+    df['K'], df['D'] = k_values, d_values
+    return df
+
 def send_telegram_message():
-    # 這裡會自動讀取你剛剛在 Secrets 設定的值
     token = os.environ.get('TELEGRAM_TOKEN')
     chat_id = os.environ.get('TELEGRAM_CHAT_ID')
- 
-     # 取得台灣時間 (UTC+8)新增
+    
+    # 1. 下載並計算 KD
+    ticker = '0050.TW'
+    data = yf.download(ticker, start='2025-01-01', progress=False)
+    if isinstance(data.columns, pd.MultiIndex):
+        data.columns = data.columns.get_level_values(0)
+    df_kd = calculate_kd(data)
+    
+    # 2. 準備訊息內容
     taiwan_tz = timezone(timedelta(hours=8))
-    now = datetime.now(taiwan_tz)
-    time_str = now.strftime("%Y-%m-%d %H:%M:%S")    
+    time_str = datetime.now(taiwan_tz).strftime("%Y-%m-%d %H:%M:%S")
+    kd_data_str = df_kd[['Close', 'K', 'D']].tail(10).to_string()
     
-    # 你的訊息內容
-    #message = "這是一則來自 GitHub Actions 的自動排程訊息！"
-
-    # 訊息內容加入時間--新增
-    message = f"GITHUB ACTION 自動排程通知\n現在時間: {time_str}"
+    message = f"🚀 GITHUB ACTION 自動排程通知\n時間: {time_str}\n\n0050 KD指標 (近10日):\n{kd_data_str}"
     
-    
+    # 3. 發送
     url = f"https://api.telegram.org/bot{token}/sendMessage"
-    payload = {
-        "chat_id": chat_id,
-        "text": message
-    }
-    
+    payload = {"chat_id": chat_id, "text": message}
     response = requests.post(url, data=payload)
+    
     if response.status_code == 200:
-        #新增
-        print(f"GITHUB ACTION 訊息發送成功: {time_str}")
-      # print("訊息發送成功")
+        print(f"發送成功: {time_str}")
     else:
-        print(f"GITHUB ACTION 發送失敗: {response.text}")
+        print(f"發送失敗: {response.text}")
 
 if __name__ == "__main__":
     send_telegram_message()
