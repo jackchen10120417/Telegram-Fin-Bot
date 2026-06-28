@@ -23,6 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: pip install requests
+    # --- 關鍵步驟：在這裡安裝套件 ---
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      # ----------------------------
 
       - name: Run script
         env:
