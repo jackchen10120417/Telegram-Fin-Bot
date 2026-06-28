@@ -35,7 +35,7 @@ def run_bot():
     
     # 2. 格式化訊息
     time_str = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S")
-    kd_str = df_kd[['Close', 'K', 'D']].tail(10).to_string()
+    kd_str = df_kd[['Close', 'K', 'D']].tail(5).to_string()
     message = f"📊 cloud 0050 KD 排程通知\n時間: {time_str}\n\n```\n{kd_str}\n```"
     
     # 3. 發送至 Telegram
