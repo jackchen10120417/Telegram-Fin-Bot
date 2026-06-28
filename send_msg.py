@@ -28,10 +28,10 @@ def send_telegram_message():
     response = requests.post(url, data=payload)
     if response.status_code == 200:
         #新增
-        print(f"訊息發送成功: {time_str}")
+        print(f"GITHUB ACTION 訊息發送成功: {time_str}")
       # print("訊息發送成功")
     else:
-        print(f"發送失敗: {response.text}")
+        print(f"GITHUB ACTION 發送失敗: {response.text}")
 
 if __name__ == "__main__":
     send_telegram_message()
