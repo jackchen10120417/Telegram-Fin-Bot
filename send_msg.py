@@ -16,7 +16,7 @@ def send_telegram_message():
     #message = "這是一則來自 GitHub Actions 的自動排程訊息！"
 
     # 訊息內容加入時間--新增
-    message = f"自動排程通知\n現在時間: {time_str}"
+    message = f"GITHUB ACTION 自動排程通知\n現在時間: {time_str}"
     
     
     url = f"https://api.telegram.org/bot{token}/sendMessage"
