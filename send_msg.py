@@ -62,9 +62,8 @@ def send_telegram_message():
     
     other_stocks_str = get_other_stock_prices(other_tickers)   # 新增這行 個股
     
-   # message = f"🚀 GITHUB ACTION 自動排程通知\n時間: {time_str}\n\n0050 KD指標 (近10日):\n{kd_data_str}"
-
-     message = (                                                       #新增這行 個股  修改
+    #message = f"🚀 GITHUB ACTION 自動排程通知\n時間: {time_str}\n\n0050 KD指標 (近10日):\n{kd_data_str}"
+    message = (                                                       #新增這行 個股  修改
         f"🚀 GITHUB ACTION 自動排程通知\n時間: {time_str}\n\n"
         f"0050 KD指標 (近10日):\n{kd_data_str}\n\n"
         f"📈 其他股票股價:\n{other_stocks_str}"
