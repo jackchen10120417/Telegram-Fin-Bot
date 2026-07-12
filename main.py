@@ -63,7 +63,7 @@ def run_bot():
     other_stocks_str = get_other_stock_prices(other_tickers)   # 新增    
     #message = f"📊 cloud 0050 KD 排程通知\n時間: {time_str}\n\n```\n{kd_str}\n```"
     message = (                                                       #新增這行 個股  修改
-        f"🚀 GITHUB ACTION 自動排程通知\n時間: {time_str}\n\n"
+        f" CLOUD 0050 KD50 自動排程通知\n時間: {time_str}\n\n"
         f"0050 KD指標 (近10日):\n{kd_str}\n\n"
         f"📈 其他股票股價:\n{other_stocks_str}"
     )
